@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>视频列表</title>
+    <script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.0"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<body>
+<div id="app">
+    <input v-model="keyword"><el-button v-on:click="getPage">查询</el-button>
+    {{keyword}}
+    <table>
+        <tr v-for="site in sites">
+            <td>{{site.description}}</td>
+            <td>{{site.url}}</td>
+        </tr>
+    </table>
+</div>
+<script>
+    Vue.http.options.emulateJSON = true;
+    Vue.http.options.emulateHTTP = true;
+    var vue = new Vue({
+        el: "#app",
+        data: {
+            keyword: "",
+            sites: []
+        },
+        methods: {
+            getPage: function () {
+                // GET /someUrl
+                this.$http.get("/url/getPage",{params:{keyword:this.keyword}}).then(response => {
+
+                    // get body data
+                    this.sites = response.body;
+
+            }, response => {
+                    // error callback
+                    return
+                });
+            }
+        }
+    });
+    vue.getPage();
+</script>
+</body>
+</html>

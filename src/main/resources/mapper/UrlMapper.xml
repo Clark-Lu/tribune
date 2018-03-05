@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.changlu.tribune.mapper.UrlMapper">
+
+    <select id="getPage" resultType="com.changlu.tribune.model.Url">
+        SELECT * FROM url WHERE 1=1
+        <if test="keyword != null and keyword != ''">
+            AND
+            (
+                url LIKE CONCAT('%',#{keyword},'%')
+                OR
+                description LIKE CONCAT('%',#{keyword},'%')
+            )
+        </if>
+        ORDER BY id DESC
+        <if test="offset != null and size != null">
+            LIMIT #{offset},#{size}
+        </if>
+    </select>
+
+</mapper>
