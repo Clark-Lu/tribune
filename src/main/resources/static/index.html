@@ -6,13 +6,13 @@
     <script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.0"></script>
     <!-- 引入样式 -->
-    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!--<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">-->
     <!-- 引入组件库 -->
-    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <!--<script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
 </head>
 <body>
 <div id="app">
-    <input v-model="keyword"><el-button v-on:click="getPage">查询</el-button>
+    <input v-model="keyword"><button v-on:click="getPage">查询</button>
     {{keyword}}
     <table>
         <tr v-for="site in sites">
