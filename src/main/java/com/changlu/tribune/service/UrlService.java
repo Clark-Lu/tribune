@@ -13,7 +13,15 @@ public class UrlService {
     @Autowired
     private UrlMapper urlMapper;
 
+    public Integer count(String keyword){
+        return urlMapper.count(keyword);
+    }
+
     public List<Url> getPage(String keyword, Integer offset, Integer size){
         return urlMapper.getPage(keyword, offset, size);
+    }
+
+    public void insert(Url url){
+        urlMapper.insert(url);
     }
 }

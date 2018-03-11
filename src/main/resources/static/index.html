@@ -19,51 +19,139 @@
                     <el-input v-model="keyword" placeholder="输入关键字搜索" clearable/>
                 </div>
             </el-col>
-            <el-col :span="6">
+            <el-col :span="2">
                 <div class="grid-content">
                     <el-button v-on:click="getPage" icon="el-icon-search" type="primary" round>搜索</el-button>
                 </div>
             </el-col>
+            <el-col :span="1">
+                <div>
+                    <el-button icon="el-icon-plus" @click="dialogFormVisible = true" type="danger" round>增加</el-button>
+                </div>
+            </el-col>
         </el-row>
     </div>
+    <el-dialog title="新增网址" :visible.sync="dialogFormVisible">
+        <el-form :model="form">
+            <el-form-item label="简介">
+                <el-input v-model="form.description"></el-input>
+            </el-form-item>
+            <el-form-item label="网址">
+                <el-input v-model="form.url"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="addUrl">确 定</el-button>
+        </div>
+    </el-dialog>
     <div>
         <template>
             <el-row type="flex" justify="center">
                 <el-col :span="20">
-                    <el-table :data="sites" style="width: 80%">
-                        <el-table-column prop="description" label="简介">
-                        </el-table-column>
-                        <el-table-column prop="url" label="网址"></el-table-column>
-                    </el-table>
+                    <template>
+                        <el-table :data="sites" style="width: 80%">
+                            <el-table-column prop="description" label="简介"></el-table-column>
+                            <el-table-column  label="网址">
+                                <template scope="scope">
+                                    <el-button v-on:click="openUrl(scope.row.url)">{{scope.row.url}}</el-button>
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="createTime" label="上传时间"></el-table-column>
+                        </el-table>
+                    </template>
                 </el-col>
+            </el-row>
+            <el-row type="flex" justify="center">
+            <div class="block">
+                <el-pagination
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page="currentPage"
+                        :page-sizes="[10, 20, 30, 40]"
+                        :page-size="sizes"
+                        layout="total, sizes, prev, pager, next, jumper"
+                        :total="total">
+                </el-pagination>
+            </div>
             </el-row>
         </template>
     </div>
 </div>
 <script>
-    Vue.http.options.emulateJSON = true;
+//    Vue.http.options.emulateJSON = true;
     Vue.http.options.emulateHTTP = true;
     var vue = new Vue({
         el: "#app",
         data: {
             keyword: "",
-            sites: []
+            sites: [],
+            currentPage:1,
+            sizes:10,
+            total:10,
+            dialogFormVisible:false,
+            form:{
+
+            }
         },
         methods: {
-            getPage: function () {
-                // GET /someUrl
-                this.$http.get("/url/getPage", {params: {keyword: this.keyword}}).then(function (response) {
+            getCount:function () {
+                this.$http.get("/url/getCount", {params: {keyword: this.keyword}}).then(function (response) {
 
                         // get body data
-                        this.sites = response.body;
-
+                        this.total = response.body;
                     }, function (response) {
                         // error callback
                         return
                     }
                 )
                 ;
+            },
+            getPage: function () {
+                // GET /someUrl
+                this.getCount();
+                this.$http.get("/url/getPage", {params: {keyword: this.keyword,pageNo:this.currentPage,size:this.sizes}}).then(function (response) {
+
+                        // get body data
+                        this.sites = response.body;
+                    }, function (response) {
+                        // error callback
+                        return
+                    }
+                )
+                ;
+            },
+            openUrl:function (url) {
+                if(url.substring(0,4) != 'http'){
+                    console.log(url.substring(0,4));
+                    url = "http://" + url;
+                }
+                window.open(url);
+            },
+            handleSizeChange:function (size) {
+                this.sizes = size;
+                this.getPage();
+            },
+            handleCurrentChange:function (currentPage) {
+                this.currentPage = currentPage;
+                this.getPage();
+            },
+            addUrl:function () {
+                this.dialogFormVisible = false;
+                this.$http.post("/url/insert", {url:this.form.url,description:this.form.description}).then(function (response) {
+
+                        // get body data
+                        this.sites = response.body;
+
+                    }, function (response) {
+                        // error callback
+                    }
+                )
+                ;
+                this.getPage();
+                console.log("getPage");
             }
+
         }
     });
     vue.getPage();

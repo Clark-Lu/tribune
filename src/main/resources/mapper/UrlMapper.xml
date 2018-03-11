@@ -4,6 +4,19 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.changlu.tribune.mapper.UrlMapper">
 
+    <select id="count" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM url WHERE 1=1
+        <if test="keyword != null and keyword != ''">
+            AND
+            (
+            url LIKE CONCAT('%',#{keyword},'%')
+            OR
+            description LIKE CONCAT('%',#{keyword},'%')
+            )
+        </if>
+        ORDER BY id DESC
+    </select>
+
     <select id="getPage" resultType="com.changlu.tribune.model.Url">
         SELECT * FROM url WHERE 1=1
         <if test="keyword != null and keyword != ''">
@@ -19,5 +32,9 @@
             LIMIT #{offset},#{size}
         </if>
     </select>
+
+    <insert id="insert">
+        INSERT INTO url(url,description,create_time,update_time) VALUES (#{url.url},#{url.description},NOW(),NOW())
+    </insert>
 
 </mapper>

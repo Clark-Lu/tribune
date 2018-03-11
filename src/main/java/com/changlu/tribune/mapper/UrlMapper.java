@@ -9,6 +9,10 @@ import java.util.List;
 @Repository
 public interface UrlMapper {
 
+    Integer count(@Param("keyword")String keyword);
+
     List<Url> getPage(@Param("keyword") String keyword, @Param("offset") Integer offset, @Param("size") Integer size);
+
+    void insert(@Param("url")Url url);
 
 }
