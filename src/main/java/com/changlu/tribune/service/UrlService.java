@@ -24,4 +24,8 @@ public class UrlService {
     public void insert(Url url){
         urlMapper.insert(url);
     }
+
+    public void delete(Long id){
+        urlMapper.delete(id);
+    }
 }

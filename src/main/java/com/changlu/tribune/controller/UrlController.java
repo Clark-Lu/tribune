@@ -27,7 +27,7 @@ public class UrlController {
     }
 
     @PostMapping(value = "/insert")
-    public Boolean insert(Url url){
+    public Boolean insert(@RequestBody Url url){
         try {
             urlService.insert(url);
             return true;
@@ -35,4 +35,16 @@ public class UrlController {
             return false;
         }
     }
+
+    @PostMapping(value = "/delete")
+    public Boolean delete(Long id){
+        try {
+            urlService.delete(id);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+    }
+
+
 }

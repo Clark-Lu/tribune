@@ -24,8 +24,27 @@
                     <el-button v-on:click="getPage" icon="el-icon-search" type="primary" round>搜索</el-button>
                 </div>
             </el-col>
+            <el-col :span="1">
+                <div>
+                    <el-button icon="el-icon-plus" @click="dialogFormVisible = true" type="success" round>增加</el-button>
+                </div>
+            </el-col>
         </el-row>
     </div>
+    <el-dialog title="新增网址" :visible.sync="dialogFormVisible">
+        <el-form :model="form">
+            <el-form-item label="简介">
+                <el-input v-model="form.description"></el-input>
+            </el-form-item>
+            <el-form-item label="网址">
+                <el-input v-model="form.url"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="addUrl">确 定</el-button>
+        </div>
+    </el-dialog>
     <div style="padding-top: 30px;">
         <template>
             <el-row type="flex" justify="center">
@@ -39,6 +58,11 @@
                                 </template>
                             </el-table-column>
                             <el-table-column prop="createTime" label="上传时间" align="center" width="180"></el-table-column>
+                            <el-table-column label="操作" align="center" width="100">
+                                <template scope="scope">
+                                    <el-button  @click="remove(scope.row.id)" type="danger" icon="el-icon-delete">删除</el-button>
+                                </template>
+                            </el-table-column>
                         </el-table>
                     </template>
                 </el-col>
@@ -116,6 +140,25 @@
             handleCurrentChange:function (currentPage) {
                 this.currentPage = currentPage;
                 this.getPage();
+            },
+            addUrl:function () {
+                this.dialogFormVisible = false;
+                this.$http.post("/url/insert", {url:this.form.url,description:this.form.description}).then(function (response) {
+
+                        this.getPage();
+
+                    }, function (response) {
+                        // error callback
+                    }
+                )
+                ;
+            },
+            remove:function (id) {
+                this.$http.post("/url/delete",{id:id},{emulateJSON:true}).then(function (response) {
+                    this.getPage();
+                },function (response) {
+                    alert("删除失败");
+                });
             }
         }
     });

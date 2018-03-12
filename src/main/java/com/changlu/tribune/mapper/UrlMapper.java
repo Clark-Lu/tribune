@@ -15,4 +15,6 @@ public interface UrlMapper {
 
     void insert(@Param("url")Url url);
 
+    void delete(@Param("id")Long id);
+
 }

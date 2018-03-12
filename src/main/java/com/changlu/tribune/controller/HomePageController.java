@@ -11,4 +11,9 @@ public class HomePageController {
     public String homePage(){
         return "/index.html";
     }
+
+    @RequestMapping(value = "/administrator",method = RequestMethod.GET)
+    public String admin(){
+        return "/admin.html";
+    }
 }
