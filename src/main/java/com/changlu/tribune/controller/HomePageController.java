@@ -16,4 +16,9 @@ public class HomePageController {
     public String admin(){
         return "/admin.html";
     }
+
+    @RequestMapping(value = "/buyer",method = RequestMethod.GET)
+    public String buyer(){
+        return "/buyer_admin.html";
+    }
 }

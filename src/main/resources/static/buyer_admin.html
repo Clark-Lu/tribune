@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>购买人信息</title>
+    <script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.0"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.2.1/lib/theme-chalk/index.css"/>
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui@2.2.1/lib/index.js"></script>
+</head>
+<body>
+<div id="app">
+    <div style="padding-top: 30px;">
+        <el-row :gutter="20" type="flex" justify="center">
+            <el-col :span="6">
+                <div class="grid-content">
+                    <el-input v-model="keyword" placeholder="输入关键字搜索" clearable/>
+                </div>
+            </el-col>
+            <el-col :span="2">
+                <div class="grid-content">
+                    <el-button v-on:click="getPage" icon="el-icon-search" type="primary" round>搜索</el-button>
+                </div>
+            </el-col>
+            <el-col :span="1">
+                <div>
+                    <el-button icon="el-icon-plus" @click="dialogFormVisible = true" type="success" round>增加</el-button>
+                </div>
+            </el-col>
+        </el-row>
+    </div>
+    <el-dialog title="新增购买人" :visible.sync="dialogFormVisible">
+        <el-form :model="form">
+            <el-form-item label="姓名">
+                <el-input v-model="form.name"></el-input>
+            </el-form-item>
+            <el-form-item label="手机号">
+                <el-input v-model="form.mobile"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="addBuyer">确 定</el-button>
+        </div>
+    </el-dialog>
+    <el-dialog title="编辑购买人" :visible.sync="editVisible">
+        <el-form :model="editForm">
+            <el-form-item label="姓名">
+                <el-input v-model="editForm.name"></el-input>
+            </el-form-item>
+            <el-form-item label="手机号">
+                <el-input v-model="editForm.mobile"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="editVisible = false">取 消</el-button>
+            <el-button type="primary" @click="editBuyer">确 定</el-button>
+        </div>
+    </el-dialog>
+    <div style="padding-top: 30px;">
+        <template>
+            <el-row type="flex" justify="center">
+                <el-col :span="16">
+                    <template>
+                        <el-table :data="buyerList" stripe>
+                            <el-table-column prop="name" label="姓名" align="center"></el-table-column>
+                            <el-table-column prop="mobile" label="手机号" align="center"></el-table-column>
+                            <el-table-column prop="createTime" label="创建时间" align="center" width="180"></el-table-column>
+                            <el-table-column prop="updateTime" label="更新时间" align="center" width="180"></el-table-column>
+                            <el-table-column label="操作" align="center" width="360">
+                                <template scope="scope">
+                                    <el-button  @click="edit(scope.row)" type="primary" icon="el-icon-edit" size="small">编辑</el-button>
+                                    <el-button  @click="remove(scope.row.id)" type="danger" icon="el-icon-delete" size="small">删除</el-button>
+                                    <el-button  @click="detail(scope.row.id)"  icon="el-icon-info" size="small">购买记录</el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </template>
+                </el-col>
+            </el-row>
+            <el-row type="flex" justify="center">
+            <div class="block">
+                <el-pagination
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page="currentPage"
+                        :page-sizes="[5, 6, 7, 8]"
+                        :page-size="sizes"
+                        layout="total, sizes, prev, pager, next, jumper"
+                        :total="total">
+                </el-pagination>
+            </div>
+            </el-row>
+        </template>
+    </div>
+</div>
+<script>
+//    Vue.http.options.emulateJSON = true;
+    Vue.http.options.emulateHTTP = true;
+    var vue = new Vue({
+        el: "#app",
+        data: {
+            keyword: "",
+            buyerList: [],
+            currentPage:1,
+            sizes:5,
+            total:10,
+            dialogFormVisible:false,
+            form:{
+
+            },
+            editVisible:false,
+            editForm:{
+
+            }
+        },
+        methods: {
+            getCount:function () {
+                this.$http.get("/buyer/getCount", {params: {keyword: this.keyword}}).then(function (response) {
+
+                        // get body data
+                        this.total = response.body;
+                    }, function (response) {
+                        // error callback
+                        return
+                    }
+                )
+                ;
+            },
+            getPage: function () {
+                // GET /someUrl
+                this.getCount();
+                this.$http.get("/buyer/select", {params: {keyword: this.keyword,pageNo:this.currentPage,size:this.sizes}}).then(function (response) {
+
+                        // get body data
+                        this.buyerList = response.body;
+                    }, function (response) {
+                        // error callback
+                        return
+                    }
+                )
+                ;
+            },
+            handleSizeChange:function (size) {
+                this.sizes = size;
+                this.getPage();
+            },
+            handleCurrentChange:function (currentPage) {
+                this.currentPage = currentPage;
+                this.getPage();
+            },
+            addBuyer:function () {
+                this.dialogFormVisible = false;
+                this.$http.post("/buyer/insert", {name:this.form.name,mobile:this.form.mobile}).then(function (response) {
+
+                        this.getPage();
+
+                    }, function (response) {
+                        // error callback
+                    }
+                )
+                ;
+            },
+            remove:function (id) {
+                this.$http.post("/buyer/delete",{id:id},{emulateJSON:true}).then(function (response) {
+                    this.getPage();
+                },function (response) {
+                    alert("删除失败");
+                });
+            },
+            editBuyer:function () {
+                this.editVisible = false;
+                this.$http.post("/buyer/update", {id:this.editForm.id,name:this.editForm.name,mobile:this.editForm.mobile}).then(function (response) {
+
+                        this.getPage();
+
+                    }, function (response) {
+                        // error callback
+                    }
+                )
+                ;
+            },
+            edit:function (data) {
+                this.editForm.id = data.id;
+                this.editForm.name = data.name;
+                this.editForm.mobile = data.mobile;
+                this.editVisible = true;
+            },
+            detail:function (id) {
+
+
+            }
+        }
+    });
+    vue.getPage();
+</script>
+</body>
+</html>

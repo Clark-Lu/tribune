@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.changlu.tribune.mapper.BuyerMapper">
+    <insert id="insert">
+        INSERT INTO buyer(name,mobile,create_time,update_time) VALUES (#{buyer.name},#{buyer.mobile},NOW(),NOW())
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM buyer WHERE id = #{id}
+    </delete>
+
+    <update id="update">
+        UPDATE buyer
+        SET
+        name = #{buyer.name},
+        mobile = #{buyer.mobile},
+        update_time = NOW()
+        WHERE id = #{buyer.id}
+    </update>
+
+    <select id="select" resultType="com.changlu.tribune.model.Buyer">
+        SELECT * FROM buyer WHERE 1=1
+        <if test="keyword != null and keyword != ''">
+            AND
+            (
+                name LIKE CONCAT('%',#{keyword},'%')
+                OR
+                mobile LIKE CONCAT('%',#{keyword},'%')
+            )
+        </if>
+        LIMIT #{offset},#{size}
+    </select>
+
+    <select id="getCount" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM buyer WHERE 1=1
+        <if test="keyword != null and keyword != ''">
+            AND
+            (
+            name LIKE CONCAT('%',#{keyword},'%')
+            OR
+            mobile LIKE CONCAT('%',#{keyword},'%')
+            )
+        </if>
+    </select>
+</mapper>
