@@ -13,8 +13,6 @@ public interface BuyHistoryMapper {
 
     void delete(@Param("id")Long id);
 
-    void update(@Param("buyHistory")BuyHistory buyHistory);
-
     List<BuyHistory> select(@Param("buyerId")Long buyerId);
 
 }

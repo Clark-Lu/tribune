@@ -21,4 +21,9 @@ public class HomePageController {
     public String buyer(){
         return "/buyer_admin.html";
     }
+
+    @RequestMapping(value = "/buyHistory",method = RequestMethod.GET)
+    public String buyHistory(){
+        return "/buy_history_admin.html";
+    }
 }

@@ -44,4 +44,8 @@
             )
         </if>
     </select>
+
+    <select id="getById" resultType="com.changlu.tribune.model.Buyer">
+        SELECT * FROM buyer WHERE id = #{id}
+    </select>
 </mapper>

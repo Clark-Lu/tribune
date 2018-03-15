@@ -55,4 +55,9 @@ public class BuyerController {
         return buyerService.getCount(keyword);
     }
 
+    @GetMapping("/getById")
+    public Buyer getById(Long id){
+        return buyerService.getById(id);
+    }
+
 }

@@ -12,6 +12,8 @@ public class BuyHistory {
 
     private Double amount;
 
+    private String description;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
@@ -37,6 +39,14 @@ public class BuyHistory {
 
     public void setAmount(Double amount) {
         this.amount = amount;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Date getCreateTime() {

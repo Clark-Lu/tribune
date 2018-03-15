@@ -19,4 +19,6 @@ public interface BuyerMapper {
 
     Integer getCount(@Param("keyword")String keyword);
 
+    Buyer getById(@Param("id")Long id);
+
 }

@@ -32,4 +32,8 @@ public class BuyerService {
     public Integer getCount(String keyword){
         return buyerMapper.getCount(keyword);
     }
+
+    public Buyer getById(Long id){
+        return buyerMapper.getById(id);
+    }
 }
