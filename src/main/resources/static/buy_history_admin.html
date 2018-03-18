@@ -16,8 +16,8 @@
     <div style="padding-top: 30px;">
         <el-row :gutter="10" type="flex" justify="center">
             <el-col :span="3">姓名：{{buyer.name}}</el-col>
-            <el-col :span="3">手机号：{{buyer.mobile}}</el-col>
-            <el-col :span="3">总金额：{{total}}元</el-col>
+            <el-col :span="4">手机号：{{buyer.mobile}}</el-col>
+            <el-col :span="4">总金额：{{total.toFixed(2)}}元</el-col>
         </el-row>
     </div>
     <el-dialog title="新增购买记录" :visible.sync="dialogFormVisible">
@@ -39,7 +39,7 @@
             <el-row type="flex" justify="center">
                 <el-col :span="16">
                     <template>
-                        <el-table :data="buyHistoryList" stripe height="500">
+                        <el-table :data="buyHistoryList" stripe height="400">
                             <el-table-column prop="description" label="描述" align="center"></el-table-column>
                             <el-table-column prop="amount" label="交易额" width="180" align="center">
                             </el-table-column>
@@ -67,11 +67,12 @@
 </div>
 <script>
     //    Vue.http.options.emulateJSON = true;
+    var paramId = window.location.search.substring(1).split("=")[1];
     Vue.http.options.emulateHTTP = true;
     var vue = new Vue({
         el: "#app",
         data: {
-            buyerId: 1,
+            buyerId: paramId,
             buyHistoryList: [],
             dialogFormVisible: false,
             form: {},

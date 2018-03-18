@@ -17,7 +17,7 @@
         <el-row :gutter="20" type="flex" justify="center">
             <el-col :span="6">
                 <div class="grid-content">
-                    <el-input v-model="keyword" placeholder="输入关键字搜索" clearable/>
+                    <el-input v-model="keyword" placeholder="输入姓名或手机号搜索" clearable/>
                 </div>
             </el-col>
             <el-col :span="2">
@@ -190,8 +190,7 @@
                 this.editVisible = true;
             },
             detail:function (id) {
-
-
+                window.open("/buy_history_admin.html?buyerId="+id);
             }
         }
     });
